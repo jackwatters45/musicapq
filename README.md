@@ -2,13 +2,13 @@
 
 ## TODO
 
+- test rate limit setup
 
-- getBaseUrl for routes
-
-- system theme 
 - seed some data
 - adjust search bar functionality
 - voting system
+
+- [connect spotify](https://developer.spotify.com/documentation/web-api)
 
 - user authentication
 - user profile
@@ -17,6 +17,8 @@
 - user history
 - user settings
 - user notifications
+
+- back up redis to actual database
 
 ## Acknowledgements
 

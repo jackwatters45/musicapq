@@ -7,7 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "biome check --apply .",
-		"deploy": "wrangler deploy --minify --name musicapq src/app/api/[[...route]]/route.ts"
+		"deploy": "wrangler deploy --minify src/app/api/[[...route]]/route.ts"
 	},
 	"dependencies": {
 		"@radix-ui/react-dialog": "^1.0.5",
