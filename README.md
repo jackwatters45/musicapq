@@ -2,10 +2,10 @@
 
 ## TODO
 
-- env variable
-- getBaseUrl for routes
-- vercel deployment
 
+- getBaseUrl for routes
+
+- system theme 
 - seed some data
 - adjust search bar functionality
 - voting system
