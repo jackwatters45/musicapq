@@ -7,6 +7,8 @@ import { cors } from "hono/cors";
 import { handle } from "hono/vercel";
 import type { Context, Env } from "hono";
 
+import { nanoid } from "nanoid";
+
 declare module "hono" {
 	interface ContextVariableMap {
 		ratelimit: Ratelimit;
@@ -59,6 +61,20 @@ app.use(async (c, next) => {
 });
 
 app.use("/*", cors());
+
+// app.get("/request-count", async (c) => {
+// const servedResuests = await  c.get("redis").get("served_requests");
+
+// return c.json({ message: "Hello from the edge!" });
+// })
+
+const placeholderResult = ["result"];
+app.get("/", async (c) => {
+	return c.json({ results: ["default"], duration: 0 });
+});
+
+export type SearchHandlerReturn = object[];
+
 app.get("/search", async (c) => {
 	try {
 		const ratelimit = c.get("ratelimit");
@@ -87,6 +103,7 @@ app.get("/search", async (c) => {
 		const query = c.req.query("q")?.toUpperCase();
 
 		if (!query) {
+			// TODO should return the same thing as the home page
 			return c.json({ message: "Invalid search query" }, { status: 400 });
 		}
 
@@ -111,7 +128,8 @@ app.get("/search", async (c) => {
 		const end = performance.now();
 
 		return c.json({
-			results: res,
+			// results: res,
+			results: placeholderResult,
 			duration: end - start,
 		});
 	} catch (err) {
