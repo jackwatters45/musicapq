@@ -1,84 +1,76 @@
-"use client";
+import { getQueryResults } from "./actions";
+import type { QueryResults } from "./actions";
+import type { SearchParams } from "../../types";
 
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from "@/components/ui/command";
-import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import SearchCommand from "../components/search-command";
+import SuggestStandardGenre from "@/components/suggest-genre/suggest-genre";
 
-// TODO esc should close dropdown
-export default function Home() {
-	const [input, setInput] = useState<string>("");
-	const [searchResults, setSearchResults] = useState<{
-		results: string[];
-		duration: number;
-	}>();
+// TODO
+// actual fetch
+// search?q= -> should be same / route
 
-	useEffect(() => {
-		const fetchData = async () => {
-			if (!input) return setSearchResults(undefined);
-			// once deployed, prefix this with your cloudflare worker url
-			// i.e.: https://<name>.<account-name>.workers.dev/api/search?q=${input}
+// connect db and implement suggest new genre
 
-			const res = await fetch(
-				`https://musicapq.jack-watters.workers.dev/api/search?q=${input}`,
-			);
-			const data = (await res.json()) as { results: string[]; duration: number };
-			setSearchResults(data);
-		};
+// check out browser spotify for some routing logic inspo
 
-		fetchData();
-	}, [input]);
+// figma this jawn
+// better way to display results
+
+// search only official genres, artists, and playlists, etc
+// actual topic/search page shows non official default sorted by popularity
+// should exist on topic page mot here ?????????????
+
+export default async function Page({
+	searchParams,
+}: { searchParams: SearchParams }) {
+	const { results, error } = await getQueryResults(searchParams.q);
 
 	return (
-		<main className="h-screen w-screen px-6">
+		<main className="h-screen w-screen px-6 ">
 			<div className="flex flex-col gap-6 items-center pt-32 duration-500 animate-in animate fade-in-5 slide-in-from-bottom-2.5">
 				<h1 className="text-5xl font-bold text-foreground">Música Pa Que 💃</h1>
 				<p className="text-secondary-foreground text-lg max-w-prose text-center">
-					A high-performance API built with Hono, Next.js and Cloudflare. <br /> Type
-					a query below and get your results in miliseconds.
+					Discover music without the algorithms <br /> Type a vibe, playlist, genre,
+					or artist to get started
 				</p>
-				<div className="max-w-md w-full">
-					<Command className="rounded-lg border shadow-lg">
-						<CommandInput
-							value={input}
-							onValueChange={setInput}
-							placeholder="Search countries..."
-							className="placeholder:text-muted-foreground"
-						/>
-						<CommandList>
-							{searchResults?.results.length === 0 ? (
-								<CommandEmpty>No results found.</CommandEmpty>
-							) : null}
-
-							{searchResults?.results ? (
-								<CommandGroup heading="Results">
-									{searchResults?.results.map((result) => (
-										<CommandItem key={result} value={result} onSelect={setInput}>
-											{result}
-										</CommandItem>
-									))}
-								</CommandGroup>
-							) : null}
-
-							{searchResults?.results ? (
-								<>
-									<div className="h-px w-full bg-zinc-200" />
-
-									<p className="p-2 text-xs text-zinc-500">
-										Found {searchResults.results.length} results in{" "}
-										{searchResults?.duration.toFixed(0)}ms
-									</p>
-								</>
-							) : null}
-						</CommandList>
-					</Command>
+				<div className="max-w-md w-full space-y-6 py-6">
+					<SearchCommand />
+					<Card>
+						<CardHeader className="text-xl font-extrabold">Search Results</CardHeader>
+						<CardContent>
+							<JsonDisplay
+								searchParams={searchParams}
+								results={results}
+								error={error}
+							/>
+						</CardContent>
+					</Card>
 				</div>
+
+				<SuggestStandardGenre />
 			</div>
 		</main>
+	);
+}
+
+function JsonDisplay({
+	searchParams,
+	results,
+	error,
+}: {
+	searchParams: { [key: string]: string | string[] | undefined };
+	results: QueryResults["results"];
+	error: QueryResults["error"];
+}) {
+	return (
+		<>
+			<h2 className="font-bold">Query</h2>
+			<p>{searchParams.q}</p>
+			<h2 className="font-bold">Data</h2>
+			<pre>{JSON.stringify(results, null, 2)}</pre>
+			<h2 className="font-bold">Error</h2>
+			<pre>{JSON.stringify(error, null, 2) ?? "none"}</pre>
+		</>
 	);
 }

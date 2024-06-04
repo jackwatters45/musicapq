@@ -11,6 +11,7 @@
 - [connect spotify](https://developer.spotify.com/documentation/web-api)
 
 - user authentication
+  - use lucia
 - user profile
 - user playlists
 - user favorites/saved
@@ -23,3 +24,4 @@
 ## Acknowledgements
 
 - [Stack inspiration](https://www.youtube.com/watch?v=2Y3A4deNs9A)
+- [Real time voting inspiration](https://www.youtube.com/watch?v=zWRBobemogk)
